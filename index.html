@@ -1,1 +1,277 @@
-<h1>Set this as a source in the package manager on Windows96.net</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>waffuru's totally useful repo!</title>
+
+<style>
+	html, body {
+  height: 100%;
+  margin: 0;
+}
+body {
+    margin: 0;
+    background: linear-gradient(to bottom, #2C537C 0%, #294D73 45%, #1E3957 100%);
+    font-family: Tahoma, Verdana, sans-serif;
+}
+
+.page {
+    width: 728px;
+    margin: 0 auto;
+}
+
+/* HEADER */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+}
+
+.logo {
+    width: 88px;
+    height: 31px;
+    border: 1px solid white;
+}
+
+.nav {
+    display: flex;
+    gap: 12px;
+}
+
+.nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+/* HERO */
+.hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-items: center;
+    margin-top: 24px;
+}
+
+.hero-image,
+.step-image,
+.preview-image {
+    height: 180px;
+    aspect-ratio:1/1;
+
+    background-image:
+        linear-gradient(45deg, #ccc 25%, transparent 25%),
+        linear-gradient(-45deg, #ccc 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #ccc 75%),
+        linear-gradient(-45deg, transparent 75%, #ccc 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+
+    /* strong vignette */
+    -webkit-mask-image: radial-gradient(circle, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 70%);
+    mask-image: radial-gradient(circle, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 70%);
+}
+
+/* HERO TEXT */
+.hero-text h1 {
+    color: white;
+    font-size: 42px;
+    font-weight: 200;
+    margin: 0 0 8px 0;
+    line-height: 1.1;
+}
+
+.hero-text p {
+    color: white;
+    font-size: 12px;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* TUTORIAL */
+.tutorial {
+    margin-top: 48px;
+}
+
+.tutorial h2 {
+    color: white;
+    font-size: 28px;
+    font-weight: 300;
+    margin: 0 0 16px 0;
+}
+
+.steps {
+    display: flex;
+    gap: 12px;
+}
+
+.step {
+    flex: 1;
+}
+
+.step-image-wrap {
+    position: relative;
+}
+
+/* NUMBER — split across edge */
+.step-number {
+    position: absolute;
+    top: 75%; /* center of number sits on edge */
+    left: 6px;
+    transform: translateY(-50%);
+
+    font-size: 64px;
+    font-weight: 200;
+    line-height: 1;
+
+    background: linear-gradient(to bottom, #ffffff, #cfcfcf);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    opacity: 0.9;
+    z-index: 2;
+}
+
+.step-image {
+    position: relative;
+    z-index: 1;
+}
+
+.step-text {
+    color: white;
+    font-size: 12px;
+    margin-top: 6px;
+}
+
+/* PREVIEW SECTIONS */
+.previews {
+    margin-top: 56px;
+}
+
+.preview {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+/* alternate layout */
+.preview:nth-child(even) .preview-image {
+    order: 2;
+}
+.preview:nth-child(even) .preview-text {
+    order: 1;
+}
+
+.preview-text h3 {
+    color: white;
+    font-size: 22px;
+    font-weight: 200;
+    margin: 0 0 6px 0;
+}
+
+.preview-text p {
+    color: white;
+    font-size: 12px;
+    margin: 0;
+    line-height: 1.4;
+}
+</style>
+
+</head>
+
+<body>
+<div class="page">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="logo"></div>
+        <div class="nav">
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Links</a>
+            <a href="#">Contact</a>
+        </div>
+    </div>
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-image" style="background: url('hero.png');background-size:cover;"></div>
+        <div class="hero-text">
+            <h1>Software that shows drastic difference</h1>
+            <p>
+                try out all the quality of life improving software made just for windows 96
+                on this repository. Scroll down to see all the packages and how to add the repo.
+            </p>
+        </div>
+    </div>
+
+    <!-- TUTORIAL -->
+    <div class="tutorial">
+        <h2>Easy as 123</h2>
+
+        <div class="steps">
+
+            <div class="step">
+                <div class="step-image-wrap">
+                    <div class="step-image"></div>
+                    <div class="step-number">1</div>
+                </div>
+                <div class="step-text">Open package manager</div>
+            </div>
+
+            <div class="step">
+                <div class="step-image-wrap">
+                    <div class="step-image"></div>
+                    <div class="step-number">2</div>
+                </div>
+                <div class="step-text">Open repository list</div>
+            </div>
+
+            <div class="step">
+                <div class="step-image-wrap">
+                    <div class="step-image"></div>
+                    <div class="step-number">3</div>
+                </div>
+                <div class="step-text">
+                    Paste the following link: [link]
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- PREVIEWS -->
+    <div class="previews">
+
+        <div class="preview">
+            <div class="preview-image"></div>
+            <div class="preview-text">
+                <h3>Fast file manager</h3>
+                <p>Browse files instantly with minimal lag and a clean interface designed for speed.</p>
+            </div>
+        </div>
+
+        <div class="preview">
+            <div class="preview-image"></div>
+            <div class="preview-text">
+                <h3>Lightweight media player</h3>
+                <p>Play videos and music without heavy resource usage or unnecessary features.</p>
+            </div>
+        </div>
+
+        <div class="preview">
+            <div class="preview-image"></div>
+            <div class="preview-text">
+                <h3>System utilities pack</h3>
+                <p>Essential tweaks and tools bundled together to improve everyday workflow.</p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+</body>
+</html>
