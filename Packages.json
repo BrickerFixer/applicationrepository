@@ -8,7 +8,7 @@
         "version": 0.2,
         "feature_requirements": [],
         "min_os_version": 300005,
-        "max_os_version": 400005,
+        "max_os_version": 400000005,
         "depends": [],
         "iconFiles": {
             "32x32": "$REPO_PATH$/dist/m/mppp/icon32.png",
