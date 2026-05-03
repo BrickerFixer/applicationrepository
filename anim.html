@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>waffu.ru</title></head>
+<body style="margin: 0;">
+<a href="/" target="_top">
+<canvas id="c" width="88" height="31" style="image-rendering:pixelated;"></canvas>
+</a>
+</body>
+<script>
+const params = new URLSearchParams(location.search);
+function hexParam(key) {
+  const v = params.get(key);
+  return (v && /^[0-9a-fA-F]{3,6}$/.test(v)) ? '#' + v : null;
+}
+
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const W = 88, H = 31;
+const INK = hexParam('ink') ?? '#C5C8D0';
+const BG  = hexParam('bg');
+
+const glyphs = {
+  'w':[[1,0,0,0,1],[1,0,0,0,1],[1,0,1,0,1],[1,1,0,1,1],[1,0,0,0,1]],
+  'a':[[0,1,1,1,0],[1,0,0,0,1],[1,1,1,1,1],[1,0,0,0,1],[1,0,0,0,1]],
+  'f':[[0,1,1,1,1],[1,0,0,0,0],[1,1,1,1,0],[1,0,0,0,0],[1,0,0,0,0]],
+  'u':[[1,0,0,0,1],[1,0,0,0,1],[1,0,0,0,1],[1,0,0,0,1],[0,1,1,1,1]],
+  '.':[[0],[0],[0],[0],[1]],
+  'r':[[1,1,1,1,0],[1,0,0,0,1],[1,1,1,1,0],[1,0,1,0,0],[1,0,0,1,0]],
+};
+
+const text = 'waffuru';
+const GLYPH_H = 5, GAP = 2;
+function glyphWidth(ch) { return glyphs[ch] ? glyphs[ch][0].length : 0; }
+
+let totalW = 0;
+for (let i = 0; i < text.length; i++) { totalW += glyphWidth(text[i]); if (i < text.length-1) totalW += GAP; }
+
+const startX = Math.floor((W - totalW) / 2);
+const startY = Math.floor((H - GLYPH_H) / 2);
+const bottomY = startY + GLYPH_H - 1;
+const MID_Y = Math.floor(H / 2);
+
+const inkMap = new Uint8Array(W * H);
+const glyphInfos = [];
+let cx = startX;
+for (let i = 0; i < text.length; i++) {
+  const ch = text[i], g = glyphs[ch];
+  if (!g) { cx += GAP; continue; }
+  const gw = g[0].length;
+  glyphInfos.push({ x: cx, y: startY, gw, glyph: g });
+  for (let row = 0; row < GLYPH_H; row++)
+    for (let col = 0; col < gw; col++)
+      if (g[row][col]) inkMap[(startY + row) * W + (cx + col)] = 1;
+  cx += gw + GAP;
+}
+
+const topPixels = [], bottomPixels = [];
+for (const { x, gw, glyph } of glyphInfos) {
+  for (let col = 0; col < gw; col++) {
+    if (glyph[0][col]) topPixels.push({ px: x + col, topY: startY });
+    if (glyph[GLYPH_H-1][col]) bottomPixels.push({ px: x + col, bottomY });
+  }
+}
+
+const topSet = new Set(topPixels.map(p => p.px));
+const botSet = new Set(bottomPixels.map(p => p.px));
+
+const PAT_W = totalW + 8;
+const topLookup = new Uint8Array(PAT_W);
+topPixels.forEach(p => { const r = p.px - startX; if (r >= 0 && r < PAT_W) topLookup[r] = 1; });
+const botLookup = new Uint8Array(PAT_W);
+bottomPixels.forEach(p => { const r = p.px - startX; if (r >= 0 && r < PAT_W) botLookup[r] = 1; });
+
+const topInitOff = (PAT_W - startX % PAT_W) % PAT_W;
+const botInitOff = startX % PAT_W;
+
+const topBarcodeOtherX = [], botBarcodeOtherX = [];
+for (let x = 0; x < W; x++) {
+  if (topLookup[(x + topInitOff) % PAT_W] && !topSet.has(x)) topBarcodeOtherX.push(x);
+  if (botLookup[((x - botInitOff) % PAT_W + PAT_W) % PAT_W] && !botSet.has(x)) botBarcodeOtherX.push(x);
+}
+
+const T_UP_FULL      = 800;
+const T_DOWN_START   = 1200;
+const T_DOWN_FULL    = 2000;
+const T_FADE_START   = 2200;
+const T_FADE_END     = 2800;
+const T_GAP_START    = 2800;
+const T_GAP_END      = 3300;
+const T_OTHER_START  = 3050;
+const T_OTHER_END    = 3550;
+const BARCODE_START  = 3700;
+const TOP_SPEED = 20, BOT_SPEED = 20;
+
+function easeOut(t) { return 1 - (1 - t) ** 3; }
+function easeIn(t) { return t ** 3; }
+function clamp01(t) { return Math.max(0, Math.min(1, t)); }
+
+let startTime = null;
+
+function draw(ts) {
+  if (!startTime) startTime = ts;
+  const e = ts - startTime;
+
+  ctx.clearRect(0, 0, W, H);
+  if (BG) { ctx.fillStyle = BG; ctx.fillRect(0, 0, W, H); }
+  ctx.fillStyle = INK;
+
+  if (e >= BARCODE_START) {
+    const bT = e - BARCODE_START;
+    const topOff = (topInitOff + Math.floor(bT * TOP_SPEED / 1000)) % PAT_W;
+    for (let x = 0; x < W; x++)
+      if (topLookup[(x + topOff) % PAT_W])
+        for (let y = 0; y <= MID_Y; y++) ctx.fillRect(x, y, 1, 1);
+    const botOff = (botInitOff + Math.floor(bT * BOT_SPEED / 1000)) % PAT_W;
+    for (let x = 0; x < W; x++)
+      if (botLookup[((x - botOff) % PAT_W + PAT_W) % PAT_W])
+        for (let y = MID_Y + 1; y < H; y++) ctx.fillRect(x, y, 1, 1);
+
+  } else {
+    const gapT = clamp01((e - T_GAP_START) / (T_GAP_END - T_GAP_START));
+    const ge = easeOut(gapT);
+
+    for (let i = 0; i < topPixels.length; i++) {
+      const { px, topY } = topPixels[i];
+      const upT = clamp01((e - i * 18) / T_UP_FULL);
+      const lineStart = Math.round(topY * (1 - easeOut(upT)));
+      const lineEnd = e > T_GAP_START ? Math.round(topY + (MID_Y - topY) * ge) : topY;
+      for (let y = lineStart; y <= lineEnd; y++) ctx.fillRect(px, y, 1, 1);
+    }
+
+    for (let i = 0; i < bottomPixels.length; i++) {
+      const { px, bottomY } = bottomPixels[i];
+      const downT = clamp01((e - T_DOWN_START - i * 15) / (T_DOWN_FULL - T_DOWN_START));
+      const lineEnd = Math.round(bottomY + (H - 1 - bottomY) * easeIn(downT));
+      const lineStart = e > T_GAP_START ? Math.round(bottomY - (bottomY - (MID_Y + 1)) * ge) : bottomY;
+      for (let y = lineStart; y <= lineEnd; y++) ctx.fillRect(px, y, 1, 1);
+    }
+
+    const fadeT = clamp01((e - T_FADE_START) / (T_FADE_END - T_FADE_START));
+    if (fadeT < 1) {
+      ctx.globalAlpha = 1 - fadeT;
+      for (let y = 0; y < H; y++)
+        for (let x = 0; x < W; x++)
+          if (inkMap[y * W + x]) ctx.fillRect(x, y, 1, 1);
+      ctx.globalAlpha = 1;
+    }
+
+    if (e > T_OTHER_START) {
+      const otherT = easeOut(clamp01((e - T_OTHER_START) / (T_OTHER_END - T_OTHER_START)));
+      ctx.globalAlpha = otherT;
+      for (const x of topBarcodeOtherX)
+        for (let y = 0; y <= MID_Y; y++) ctx.fillRect(x, y, 1, 1);
+      for (const x of botBarcodeOtherX)
+        for (let y = MID_Y + 1; y < H; y++) ctx.fillRect(x, y, 1, 1);
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  ctx.strokeStyle = INK;
+  ctx.lineWidth = 1;
+  ctx.strokeRect(0.5, 0.5, W - 1, H - 1);
+  requestAnimationFrame(draw);
+}
+
+requestAnimationFrame(draw);
+</script>
+</html>
