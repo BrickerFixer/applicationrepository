@@ -9,6 +9,8 @@
         "feature_requirements": [],
         "min_os_version": 300005,
         "max_os_version": 400000005,
+        "installedSize": 28468,
+        "downloadSize": 8887,
         "depends": [],
         "iconFiles": {
             "32x32": "$REPO_PATH$/dist/m/mppp/icon32.png",
