@@ -5,7 +5,7 @@
         "description": "A vlc clone with livestream support for your system.",
         "author": "Waffuru (https://brickerfixer.github.io/applicationrepository/)",
         "category": "accessories",
-        "version": 0.4,
+        "version": 0.5,
         "feature_requirements": [],
         "min_os_version": 300005,
         "max_os_version": 400000005,
