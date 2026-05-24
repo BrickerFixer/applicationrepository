@@ -17,5 +17,24 @@
             "16x16": "$REPO_PATH$/dist/m/mppp/icon16.png"
         },
         "packageRoot": "$REPO_PATH$/dist/m/mppp/"
+    },
+    {
+        "name": "everything",
+        "friendlyName": "Everything",
+        "description": "Quick search for file names and paths.",
+        "author": "Waffuru (https://brickerfixer.github.io/applicationrepository/)",
+        "category": "accessories",
+        "version": 1.0,
+        "feature_requirements": [],
+        "min_os_version": 300005,
+        "max_os_version": 400000005,
+        "installedSize": 8731,
+        "downloadSize": 8731,
+        "depends": [],
+        "iconFiles": {
+            "32x32": "$REPO_PATH$/dist/e/everything/icon32.png",
+            "16x16": "$REPO_PATH$/dist/e/everything/icon16.png"
+        },
+        "packageRoot": "$REPO_PATH$/dist/e/everything/"
     }
 ]
